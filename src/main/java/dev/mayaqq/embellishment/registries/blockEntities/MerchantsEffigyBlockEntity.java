@@ -1,100 +1,69 @@
 package dev.mayaqq.embellishment.registries.blockEntities;
 
+import dev.mayaqq.embellishment.registries.EmbeBlockEntities;
+import dev.mayaqq.embellishment.registries.entities.HollowMerchantEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.Nameable;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.trading.Merchant;
-import net.minecraft.world.item.trading.MerchantOffer;
-import net.minecraft.world.item.trading.MerchantOffers;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.npc.VillagerType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
-public class MerchantsEffigyBlockEntity extends EffigyBlockEntity implements Nameable, MenuProvider, Merchant {
-    public MerchantsEffigyBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        super(type, pos, blockState);
+public class MerchantsEffigyBlockEntity extends EffigyBlockEntity {
+
+    private HollowMerchantEntity villager = null;
+
+    public MerchantsEffigyBlockEntity(BlockPos pos, BlockState blockState) {
+        super(EmbeBlockEntities.MERCHANTS_EFFIGY.get(), pos, blockState);
+    }
+
+    public MerchantsEffigyBlockEntity(BlockPos pos, BlockState blockState, HollowMerchantEntity villager) {
+        super(EmbeBlockEntities.MERCHANTS_EFFIGY.get(), pos, blockState);
+        this.villager = villager;
+    }
+
+    public static void tick(Level level, BlockPos pos, BlockState state, MerchantsEffigyBlockEntity blockEntity) {
+        if (blockEntity.villager != null) {
+            blockEntity.villager.tick();
+        }
+    }
+
+    public void setHollowMerchant(HollowMerchantEntity villager) {
+        this.villager = villager;
+    }
+
+    public HollowMerchantEntity getHollowMerchant() {
+        return villager;
+    }
+
+    public boolean villagerPresent() {
+        return villager != null;
+    }
+
+    public HollowMerchantEntity getVillager() {
+        return villager;
     }
 
     @Override
-    public Component getName() {
-        return null;
+    protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+        super.saveAdditional(compound, provider);
+
+        if (villagerPresent()) {
+            CompoundTag villagerCompound = new CompoundTag();
+            getVillager().saveWithoutId(villagerCompound);
+            compound.put("Merchant", villagerCompound);
+        }
     }
 
     @Override
-    public boolean hasCustomName() {
-        return Nameable.super.hasCustomName();
-    }
+    protected void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+        if (compound.contains("Merchant")) {
+            CompoundTag merchant = compound.getCompound("Merchant");
+            HollowMerchantEntity villager = new HollowMerchantEntity(level, VillagerType.PLAINS);
+            villager.addAdditionalSaveData(merchant);
 
-    @Override
-    public Component getDisplayName() {
-        return Nameable.super.getDisplayName();
-    }
-
-    @Nullable
-    @Override
-    public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        return null;
-    }
-
-    @Override
-    public void setTradingPlayer(@Nullable Player tradingPlayer) {
-
-    }
-
-    @Nullable
-    @Override
-    public Player getTradingPlayer() {
-        return null;
-    }
-
-    @Override
-    public MerchantOffers getOffers() {
-        return null;
-    }
-
-    @Override
-    public void overrideOffers(MerchantOffers offers) {
-
-    }
-
-    @Override
-    public void notifyTrade(MerchantOffer offer) {
-
-    }
-
-    @Override
-    public void notifyTradeUpdated(ItemStack stack) {
-
-    }
-
-    @Override
-    public int getVillagerXp() {
-        return 0;
-    }
-
-    @Override
-    public void overrideXp(int xp) {
-
-    }
-
-    @Override
-    public boolean showProgressBar() {
-        return false;
-    }
-
-    @Override
-    public SoundEvent getNotifyTradeSound() {
-        return null;
-    }
-
-    @Override
-    public boolean isClientSide() {
-        return false;
+            setHollowMerchant(villager);
+        }
+        super.loadAdditional(compound, provider);
     }
 }

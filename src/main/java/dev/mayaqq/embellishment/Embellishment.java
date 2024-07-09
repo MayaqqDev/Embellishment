@@ -1,9 +1,7 @@
 package dev.mayaqq.embellishment;
 
 import com.mojang.logging.LogUtils;
-import dev.mayaqq.embellishment.registries.EmbeBlockEntities;
-import dev.mayaqq.embellishment.registries.EmbeBlocks;
-import dev.mayaqq.embellishment.registries.EmbeItems;
+import dev.mayaqq.embellishment.registries.*;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -20,6 +18,8 @@ public class Embellishment {
         EmbeItems.ITEMS.register(modEventBus);
         EmbeBlocks.BLOCKS.register(modEventBus);
         EmbeBlockEntities.BLOCK_ENTITIES.register(modEventBus);
+        EmbeEntities.ENTITIES.register(modEventBus);
+        EmbeCreativeModeTabs.CREATIVE_MODE_TABS.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, EmbeConfig.SPEC);
     }
