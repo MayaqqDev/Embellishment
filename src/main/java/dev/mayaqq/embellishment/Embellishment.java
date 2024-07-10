@@ -20,6 +20,8 @@ public class Embellishment {
         EmbeBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         EmbeEntities.ENTITIES.register(modEventBus);
         EmbeCreativeModeTabs.CREATIVE_MODE_TABS.register(modEventBus);
+        EmbeMenus.MENUS.register(modEventBus);
+        modEventBus.addListener(EmbeEntities::onEntityAttributeCreation);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, EmbeConfig.SPEC);
     }
