@@ -8,8 +8,4 @@ public class EmbeMerchantMenu extends MerchantMenu {
     public EmbeMerchantMenu(int containerId, Inventory playerInventory) {
         super(containerId, playerInventory);
     }
-
-    public EmbeMerchantMenu(int containerId, Inventory playerInventory, Merchant trader) {
-        super(containerId, playerInventory, trader);
-    }
 }
