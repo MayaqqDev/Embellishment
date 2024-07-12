@@ -386,14 +386,6 @@ public class MerchantsEffigyBlockEntity extends EffigyBlockEntity implements Mer
         }
     }
 
-    /* //TODO: No idea what this does in the villager class, might be important
-        @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(DATA_VILLAGER_DATA, new VillagerData(VillagerType.PLAINS, VillagerProfession.NONE, 1));
-    }
-     */
-
     @Override
     public void openTradingScreen(Player player, Component displayName, int level) {
         Merchant.super.openTradingScreen(player, displayName, level);
