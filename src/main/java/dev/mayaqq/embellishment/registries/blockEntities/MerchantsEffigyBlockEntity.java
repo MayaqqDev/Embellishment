@@ -1,6 +1,7 @@
 package dev.mayaqq.embellishment.registries.blockEntities;
 
 import com.google.common.collect.Lists;
+import com.mojang.authlib.GameProfile;
 import dev.mayaqq.embellishment.Embellishment;
 import dev.mayaqq.embellishment.registries.EmbeBlockEntities;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -31,10 +32,13 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.util.FakePlayer;
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 
 /* TODO: The villager data is only saved as a thing in the nbt and not entity data, might cause problems, also no implementation of special prices yet, wanna do an unique one */
@@ -57,7 +61,7 @@ public class MerchantsEffigyBlockEntity extends EffigyBlockEntity implements Mer
     private boolean increaseProfessionLevelOnUpdate;
     private VillagerData data = new VillagerData(VillagerType.PLAINS, VillagerProfession.NONE, 0);
     // I wonder if this tactic with the FakeEntity will work?
-    private FakeEntity fakeEntity = new FakeEntity(this);
+    private FakePlayer fakeEntity;
 
     protected final RandomSource random = RandomSource.create();
 
@@ -188,6 +192,14 @@ public class MerchantsEffigyBlockEntity extends EffigyBlockEntity implements Mer
 
     }
 
+    private FakePlayer getFakePlayer(ServerLevel level, BlockPos pos) {
+        if (this.fakeEntity == null) {
+            this.fakeEntity = FakePlayerFactory.get(level, new GameProfile(UUID.fromString(pos.toShortString()), "Effigy"));
+            this.fakeEntity.setPosRaw(pos.getX(), pos.getY(), pos.getZ());
+        }
+        return this.fakeEntity;
+    }
+
     @Override
     public void notifyTrade(MerchantOffer offer) {
         offer.increaseUses();
@@ -308,7 +320,7 @@ public class MerchantsEffigyBlockEntity extends EffigyBlockEntity implements Mer
         int i = 0;
 
         while (i < maxNumbers && !arraylist.isEmpty()) {
-            MerchantOffer merchantoffer = arraylist.remove(this.random.nextInt(arraylist.size())).getOffer(this.fakeEntity, this.random);
+            MerchantOffer merchantoffer = arraylist.remove(this.random.nextInt(arraylist.size())).getOffer(this.getFakePlayer((ServerLevel) level, worldPosition), this.random);
             if (merchantoffer != null) {
                 givenMerchantOffers.add(merchantoffer);
                 i++;
@@ -524,42 +536,5 @@ public class MerchantsEffigyBlockEntity extends EffigyBlockEntity implements Mer
         }
 
         this.data = data;
-    }
-
-    public static class FakeEntity extends Entity implements VillagerDataHolder {
-
-        public MerchantsEffigyBlockEntity be;
-
-        public FakeEntity(EntityType<?> entityType, Level level) {
-            super(EntityType.ALLAY, level);
-        }
-
-        public FakeEntity(MerchantsEffigyBlockEntity be) {
-            this(null, null);
-            this.be = be;
-            this.setLevel(be.level);
-            this.setPosRaw(be.getBlockPos().getX(), be.getBlockPos().getY(), be.getBlockPos().getZ());
-        }
-
-        @Override
-        protected void defineSynchedData(SynchedEntityData.Builder builder) {
-
-        }
-
-        @Override
-        protected void readAdditionalSaveData(CompoundTag compound) {}
-
-        @Override
-        protected void addAdditionalSaveData(CompoundTag compound) {}
-
-        @Override
-        public VillagerData getVillagerData() {
-            return be.getVillagerData();
-        }
-
-        @Override
-        public void setVillagerData(VillagerData data) {
-            be.setVillagerData(data);
-        }
     }
 }
