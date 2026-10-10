@@ -1,0 +1,32 @@
+[versions]
+
+minecraft = "1.21.1"
+kotlin = "2.4.0"
+cloche = "0.19.14"
+parchment = "2024.11.17"
+devauth = "1.2.1"
+kotlinx-serialization = "1.8.0"
+kotlinx-coroutines = "1.10.1"
+cynosure = "1.0.3"
+kff = "5.12.0"
+rei = "16.0.799"
+emi = "1.1.24+1.21.1"
+jei = "19.27.0.343-neoforge"
+kritter = "2.0.0-alpha.55"
+
+# Neoforge
+neoforge = "21.1.233"
+
+[libraries]
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+cynosure = { module = "dev.mayaqq:cynosure", version.ref = "cynosure" }
+forge-kotlin = { module = "thedarkcolour:kotlinforforge", version.ref = "kff" }
+forge-emi = { module = "dev.emi:emi-neoforge", version.ref = "emi" }
+forge-jei = { module = "maven.modrinth:jei", version.ref = "jei" }
+forge-rei = { module = "me.shedaniel:RoughlyEnoughItems-neoforge", version.ref = "rei" }
+forge-kritter = { module = "invoke.kitty.kritter:kritter-1.21.1-neoforge", version.ref = "kritter" }
+forge-devauth = { module = "me.djtheredstoner:DevAuth-forge-latest", version.ref = "devauth" }
+
+[plugins]
+cloche = { id = "earth.terrarium.cloche", version.ref = "cloche" }
